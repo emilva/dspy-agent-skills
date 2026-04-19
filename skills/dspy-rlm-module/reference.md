@@ -9,7 +9,7 @@ dspy.RLM(
     signature: type[Signature] | str,
     max_iterations: int = 20,
     max_llm_calls: int = 50,
-    max_output_chars: int = 10_000,
+    max_output_chars: int = 100_000,
     verbose: bool = False,
     tools: list[Callable] | None = None,
     sub_lm: dspy.LM | None = None,
@@ -24,7 +24,7 @@ dspy.RLM(
 | `signature` | required | Standard DSPy signature (string or class) |
 | `max_iterations` | 20 | Max REPL steps before returning |
 | `max_llm_calls` | 50 | Hard cap across the whole RLM invocation |
-| `max_output_chars` | 10_000 | Truncates each REPL stdout blob before it reaches the LM |
+| `max_output_chars` | 100_000 | Truncates each REPL stdout blob before it reaches the LM |
 | `verbose` | False | Stream thought/code/output to stdout |
 | `tools` | None | Python callables exposed inside the sandbox |
 | `sub_lm` | None → `dspy.settings.lm` | Model used for internal recursive calls |

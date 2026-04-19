@@ -64,12 +64,16 @@ export DSPY_REFLECTION_MODEL=openrouter/qwen/qwen3-235b-a22b-thinking-2507
 Each example commits a `results.json` and `results.md` with the baseline and optimized scores from the author's run. To reproduce:
 
 ```bash
-cd examples/NN-name
-uv run --with dspy --with python-dotenv python run.py --optimize --auto light
-diff results.json runs/latest/results.json     # compare
+# For example 01; adjust path/deps for 02 and 03.
+cd examples/01-rag-qa
+uv run --with dspy --with python-dotenv --with rank-bm25 python run.py --optimize --auto light --seed 0
+
+# The run overwrites the same results.json/results.md in the example dir.
+# Compare git-tracked baseline vs. your fresh run:
+git diff results.json
 ```
 
-Runs are single-seed (`seed=0`) by default. For CI-style rigor across multiple seeds, use `run.py --bench --seeds 5` (bootstrap CI reported).
+Runs are single-seed (`seed=0`) by default; re-run with `--seed 1`, `--seed 2`, etc. for per-seed reproducibility. Multi-seed bootstrap intervals are not automated in `run.py` — if you want CI-style rigor, run the same command with multiple seeds and aggregate the JSON outputs yourself.
 
 ## Why these examples?
 

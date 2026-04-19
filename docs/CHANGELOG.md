@@ -56,3 +56,13 @@ Each example ships `pipeline.py` (module + Signature + metric), `run.py` (CLI: `
 4. **`from __future__ import annotations` breaks Pydantic-typed DSPy signatures** — DSPy receives a `ForwardRef` string instead of the actual type. Ex03's pipeline deliberately omits the future import.
 5. **`reflection_minibatch_size` matters more than you'd expect.** With small minibatches and high baseline accuracy, GEPA keeps sampling all-correct subsets and the reflection LM is never called. Raise to 6–8 when baseline > 0.7.
 6. **Modern 8B+ open models saturate simple extraction and grade-school math**. The math and invoice examples use Liquid 1.2B to create real headroom; stronger models produce baseline ≥ 0.95 and GEPA correctly no-ops.
+
+### Post-release review fixes (Codex audit)
+
+- Replaced `result.overall_score` with the real attribute `result.score` in every skill (`dspy.EvaluationResult` does not have `.overall_score`).
+- Skill docs and examples now return `dspy.Prediction(score, feedback)` everywhere — the earlier dict-returning examples would crash `dspy.Evaluate`'s parallel aggregator.
+- Added `skills/dspy-rlm-module/example_rlm.py` (every skill now has a runnable `example_*.py`, matching the claim in `docs/usage.md`).
+- Fixed `dspy.RLM` `max_output_chars` default: was documented as `10_000`, real default is `100_000`.
+- Added `wandb_api_key` and `wandb_init_kwargs` to the GEPA constructor listing.
+- Corrected `examples/README.md`'s reproduction instructions (removed references to non-existent `runs/latest/results.json` and `--bench --seeds 5` flag).
+- New regression tests (`tests/test_skill_correctness.py`) now fail on: any `.overall_score` in skill docs, dict-returning metrics in skill examples, or a skill missing `example_*.py`.

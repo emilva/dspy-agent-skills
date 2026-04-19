@@ -68,7 +68,7 @@ def build():
                 f"Invalid format: {pred_s!r}. "
                 f"Output exactly one of: positive, negative, neutral — no extra words."
             )
-        return {"score": score, "feedback": feedback}
+        return dspy.Prediction(score=score, feedback=feedback)
 
     return program, trainset, valset, rich_metric
 
@@ -120,7 +120,7 @@ def main() -> int:
     )
     Path("runs").mkdir(exist_ok=True)
 
-    print(f"Baseline: {evaluator(program).overall_score:.3f}")
+    print(f"Baseline: {evaluator(program).score:.3f}")
 
     optimizer = dspy.GEPA(
         metric=rich_metric,
@@ -134,7 +134,7 @@ def main() -> int:
         seed=0,
     )
     optimized = optimizer.compile(student=program, trainset=trainset, valset=valset)
-    print(f"Optimized: {evaluator(optimized).overall_score:.3f}")
+    print(f"Optimized: {evaluator(optimized).score:.3f}")
 
     Path("artifacts").mkdir(exist_ok=True)
     optimized.save("artifacts/program.json", save_program=False)

@@ -31,6 +31,8 @@ dspy.GEPA(
     log_dir: str | None = None,
     track_stats: bool = False,
     use_wandb: bool = False,
+    wandb_api_key: str | None = None,
+    wandb_init_kwargs: dict | None = None,
     track_best_outputs: bool = False,
     warn_on_score_mismatch: bool = True,
     use_mlflow: bool = False,

@@ -54,7 +54,7 @@ def build():
                 f"Likely issue: reasoning overshot the concise final answer. "
                 f"Next time, end with only the answer value, no prose."
             )
-        return {"score": score, "feedback": feedback}
+        return dspy.Prediction(score=score, feedback=feedback)
 
     return program, trainset, valset, rich_metric
 
@@ -101,7 +101,7 @@ def main() -> int:
         display_progress=True,
         provide_traceback=True,
     )
-    print(f"Baseline: {evaluator(program).overall_score:.3f}")
+    print(f"Baseline: {evaluator(program).score:.3f}")
 
     optimizer = dspy.GEPA(
         metric=rich_metric,
@@ -117,7 +117,7 @@ def main() -> int:
     )
     optimized = optimizer.compile(student=program, trainset=trainset, valset=valset)
 
-    print(f"Optimized: {evaluator(optimized).overall_score:.3f}")
+    print(f"Optimized: {evaluator(optimized).score:.3f}")
     out = Path("optimized_program.json")
     optimized.save(str(out), save_program=False)
     print(f"Saved → {out}")

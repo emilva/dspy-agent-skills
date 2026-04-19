@@ -41,7 +41,7 @@ evaluator = dspy.Evaluate(devset=valset, metric=rich_metric,
                           provide_traceback=True,
                           save_as_json="runs/baseline.json")
 baseline = evaluator(program)
-print("Baseline:", baseline.overall_score)
+print("Baseline:", baseline.score)
 ```
 
 ### 6. GEPA optimize
@@ -60,7 +60,7 @@ optimizer = dspy.GEPA(
     seed=0,
 )
 optimized = optimizer.compile(student=program, trainset=trainset, valset=valset)
-print("Optimized:", evaluator(optimized).overall_score)
+print("Optimized:", evaluator(optimized).score)
 ```
 
 Run `auto="light"` first as a sanity check; move to `auto="medium"`/`"heavy"` for the final run. See `dspy-gepa-optimizer`.
@@ -109,7 +109,7 @@ valset   = [...]
 def rich_metric(gold, pred, trace=None, pred_name=None, pred_trace=None):
     score = ...          # compute 0..1
     feedback = ...       # detailed critique
-    return {"score": score, "feedback": feedback}
+    return dspy.Prediction(score=score, feedback=feedback)  # NOT a dict
 
 # ----- 5. Baseline -----
 dspy.configure(lm=dspy.LM("openai/gpt-4o"), track_usage=True)
@@ -117,7 +117,7 @@ evaluator = dspy.Evaluate(devset=valset, metric=rich_metric, num_threads=8,
                           display_progress=True, provide_traceback=True,
                           save_as_json="runs/baseline.json")
 program = MyProgram()
-print("Baseline:", evaluator(program).overall_score)
+print("Baseline:", evaluator(program).score)
 
 # ----- 6. GEPA optimize (dspy-gepa-optimizer) -----
 optimizer = dspy.GEPA(
@@ -129,7 +129,7 @@ optimizer = dspy.GEPA(
     log_dir="./gepa_logs", num_threads=8, seed=0,
 )
 optimized = optimizer.compile(student=program, trainset=trainset, valset=valset)
-print("Optimized:", evaluator(optimized).overall_score)
+print("Optimized:", evaluator(optimized).score)
 
 # ----- 7. Export (dspy-fundamentals) -----
 Path("artifacts").mkdir(exist_ok=True)

@@ -25,7 +25,7 @@ rlm = dspy.RLM(
     "context, query -> answer",
     max_iterations=20,
     max_llm_calls=50,
-    max_output_chars=10_000,
+    max_output_chars=100_000,
     sub_lm=sub_lm,
     tools=[],
     verbose=False,
@@ -45,7 +45,7 @@ dspy.RLM(
     signature: type[Signature] | str,
     max_iterations: int = 20,       # REPL loop cap
     max_llm_calls: int = 50,        # sub-LM call cap (stops runaway recursion)
-    max_output_chars: int = 10_000, # truncate REPL stdout per step
+    max_output_chars: int = 100_000, # truncate REPL stdout per step
     verbose: bool = False,          # print the REPL trace
     tools: list[Callable] | None = None,
     sub_lm: dspy.LM | None = None,

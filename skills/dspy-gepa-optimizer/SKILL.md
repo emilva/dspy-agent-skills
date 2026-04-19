@@ -65,9 +65,15 @@ from dspy.teleprompt import GEPA
 ## Metric contract (precise)
 
 ```python
-def rich_metric(gold, pred, trace=None, pred_name=None, pred_trace=None) -> dict:
-    return {"score": 0.0..1.0, "feedback": "detailed natural-language critique"}
+import dspy
+
+def rich_metric(gold, pred, trace=None, pred_name=None, pred_trace=None):
+    score = ...      # 0.0..1.0
+    feedback = ...   # detailed natural-language critique
+    return dspy.Prediction(score=score, feedback=feedback)
 ```
+
+**Return `dspy.Prediction`, not a dict.** A dict with the same keys crashes `dspy.Evaluate`'s parallel aggregator (`TypeError: unsupported operand type(s) for +: 'int' and 'dict'`). GEPA uses `dspy.Evaluate` internally for candidate scoring, so the dict-return will fail inside GEPA too, not just in your explicit `Evaluate(...)` calls.
 
 - `pred_name` / `pred_trace` are set during reflection on a specific predictor inside your module — write per-predictor feedback when possible (credit assignment).
 - Feedback quality is the load-bearing part: specifics about *why* it failed and *what good looks like* are what the reflection LM acts on.
@@ -109,11 +115,13 @@ dspy.GEPA(
     log_dir=None,
     track_stats=False,
     use_wandb=False,
+    wandb_api_key=None,                      # overrides WANDB_API_KEY env var
+    wandb_init_kwargs=None,                  # dict forwarded to wandb.init(...)
     track_best_outputs=False,
     warn_on_score_mismatch=True,
     use_mlflow=False,
     seed=0,
-    gepa_kwargs=None,
+    gepa_kwargs=None,                        # e.g. {"use_cloudpickle": True} for dynamic signatures
 )
 ```
 

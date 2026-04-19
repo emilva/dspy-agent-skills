@@ -65,7 +65,7 @@ valset   = [dspy.Example(question="5*6?", answer="30").with_inputs("question"), 
 
 evaluator = dspy.Evaluate(devset=valset, metric=rich_metric, num_threads=4,
                           provide_traceback=True)
-print("Baseline:", evaluator(program).overall_score)
+print("Baseline:", evaluator(program).score)
 
 optimizer = dspy.GEPA(
     metric=rich_metric, auto="medium",
@@ -73,7 +73,7 @@ optimizer = dspy.GEPA(
     track_stats=True, log_dir="./gepa_logs",
 )
 optimized = optimizer.compile(student=program, trainset=trainset, valset=valset)
-print("Optimized:", evaluator(optimized).overall_score)
+print("Optimized:", evaluator(optimized).score)
 
 optimized.save("program.json", save_program=False)
 ```

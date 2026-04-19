@@ -24,7 +24,7 @@ Call the evaluator as `evaluator(program)`; it returns `EvaluationResult`:
 ```python
 @dataclass
 class EvaluationResult:
-    overall_score: float
+    score: float
     results: list[tuple[dspy.Example, dspy.Prediction, float | dict]]
 ```
 
@@ -39,15 +39,17 @@ metric(
     trace: DSPyTrace | None = None,     # set during .compile()
     pred_name: str | None = None,       # GEPA only — which predictor
     pred_trace: DSPyTrace | None = None, # GEPA only — that predictor's trace
-) -> float | dict | str
+) -> float | dspy.Prediction | str
 ```
 
 Return values:
 
 - `float` — treated as the score; works with `dspy.Evaluate` and most optimizers.
-- `{"score": float, "feedback": str}` — GEPA-compatible; feedback is fed to the reflection LM.
+- **`dspy.Prediction(score=float, feedback=str)`** — GEPA-compatible; feedback is fed to the reflection LM. This is the recommended shape for any metric that will be used with an optimizer.
 - `str` — rare; GEPA interprets as feedback with score derived separately.
 - `bool` — treated as 0.0 / 1.0.
+
+**Why not a dict?** A dict looks like it should work (it has `score` and `feedback` keys), but `dspy.Evaluate`'s parallel executor aggregates per-example outputs via `sum()`, which raises `TypeError: unsupported operand type(s) for +: 'int' and 'dict'`. `dspy.Prediction` defines `__float__`/`__add__` so it aggregates correctly.
 
 GEPA's per-predictor feedback: when `pred_name` is non-None, return feedback targeted at *that* predictor's trace. This lets GEPA assign credit.
 
@@ -66,7 +68,7 @@ judge = dspy.ChainOfThought(Judge)
 
 def judge_metric(gold, pred, trace=None, **kwargs):
     j = judge(question=gold.question, gold_answer=gold.answer, pred_answer=pred.answer)
-    return {"score": float(j.score), "feedback": j.critique}
+    return dspy.Prediction(score=float(j.score), feedback=j.critique)
 ```
 
 Use a stronger LM for the judge than for the program under test (`dspy.context(lm=strong_lm): judge(...)`).

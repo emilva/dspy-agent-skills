@@ -47,7 +47,7 @@ def build():
             feedback = "Correct but verbose — tighten to under 20 words."
         else:
             feedback = "Correct and concise."
-        return {"score": score, "feedback": feedback}
+        return dspy.Prediction(score=score, feedback=feedback)
 
     return program, trainset, rich_metric
 
@@ -65,8 +65,11 @@ def main() -> int:
     if args.dry_run:
         fake_pred = dspy.Prediction(answer="4")
         out = rich_metric(trainset[0], fake_pred)
-        assert isinstance(out, dict) and "score" in out and "feedback" in out
-        print(f"OK metric returns {out}")
+        # dspy.Prediction supports both attribute access and __getitem__.
+        assert hasattr(out, "score") and hasattr(out, "feedback")
+        print(
+            f"OK metric returns score={out['score']:.2f} feedback={out['feedback']!r}"
+        )
         return 0
 
     dspy.configure(lm=dspy.LM(args.model))
@@ -78,7 +81,7 @@ def main() -> int:
         provide_traceback=True,
     )
     result = evaluator(program)
-    print(f"Overall: {result.overall_score:.3f}")
+    print(f"Overall: {result.score:.3f}")
     return 0
 
 

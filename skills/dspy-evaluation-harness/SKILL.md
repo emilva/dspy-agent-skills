@@ -10,7 +10,7 @@ The metric is usually more important than the program. For `dspy.GEPA` especiall
 
 ## Two rules
 
-1. **Return scores AND feedback.** For `dspy.Evaluate` alone a float is fine; for GEPA you must return `{"score": float, "feedback": str}` (or a float alongside a string — see the GEPA skill). Write feedback as if briefing a junior engineer fixing the program: what went wrong, what good looks like, what to try.
+1. **Return a `dspy.Prediction(score=..., feedback=...)`, not a dict.** `dspy.Evaluate`'s parallel executor aggregates scores via sum, which breaks on dict outputs (`TypeError: unsupported operand type(s) for +: 'int' and 'dict'`). `dspy.Prediction` supports `__float__`/`__add__` and is what GEPA's adapter natively unwraps. A bare float still works for pure `dspy.Evaluate` scoring, but GEPA needs the score+feedback pair.
 2. **Separate valset.** Never optimize and evaluate on the same examples. Optimizers overfit fast.
 
 ## Canonical rich-feedback metric
@@ -41,7 +41,7 @@ def rich_metric(gold: dspy.Example, pred: dspy.Prediction, trace=None,
         parts.append("Correct, grounded, and concise.")
     feedback = " ".join(parts)
 
-    return {"score": score, "feedback": feedback}
+    return dspy.Prediction(score=score, feedback=feedback)
 ```
 
 ## Canonical harness
@@ -59,12 +59,12 @@ evaluator = dspy.Evaluate(
     save_as_json="eval_runs/baseline.json",
 )
 result = evaluator(program)
-print("Overall:", result.overall_score)
+print("Overall:", result.score)
 for example_result in result.results[:3]:
     print(example_result)
 ```
 
-`dspy.Evaluate` returns an `EvaluationResult` with `.overall_score` and `.results` (list of `(example, pred, score)` tuples).
+`dspy.Evaluate` returns an `EvaluationResult` with `.score` (aggregate float) and `.results` (list of `(example, pred, score)` tuples).
 
 ## Dataset hygiene
 
@@ -98,7 +98,7 @@ def evaluator():
 
 def test_program_meets_threshold(evaluator):
     result = evaluator(program)
-    assert result.overall_score >= 0.75, f"Regression: {result.overall_score:.3f}"
+    assert result.score >= 0.75, f"Regression: {result.score:.3f}"
 ```
 
 Run offline in CI with a cached LM (`dspy.LM(..., cache=True)`) + pre-populated `DSPY_CACHEDIR`.
@@ -113,6 +113,7 @@ Run offline in CI with a cached LM (`dspy.LM(..., cache=True)`) + pre-populated 
 ## Anti-patterns
 
 - Scalar-only metrics (float but no feedback) when using GEPA — wasted signal.
+- **`return {"score": s, "feedback": f}` (dict)** — crashes `dspy.Evaluate`'s parallel aggregator. Use `dspy.Prediction(score=s, feedback=f)`.
 - Exact-match metrics on open-ended generation tasks — use semantic or LM-as-judge scoring.
 - Evaluating on the trainset — optimistic by 10–30 points.
 - Silently swallowing exceptions (`provide_traceback=False`) — you'll blame the LM for a KeyError.
