@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.DS_Store
+gepa_logs/
+*.log
+
+# Historical planning doc — intentionally untracked
+PLAN.md
