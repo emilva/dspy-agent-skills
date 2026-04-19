@@ -1,0 +1,17 @@
+{
+  "task_model": "openrouter/liquid/lfm-2.5-1.2b-instruct:free",
+  "reflection_model": "openrouter/nvidia/nemotron-3-super-120b-a12b:free",
+  "auto": "light",
+  "seed": 0,
+  "trainset_size": 20,
+  "valset_size": 9,
+  "baseline_score": 0.8333333333333334,
+  "optimized_score": 0.9314814814814815,
+  "improvement": 0.0981481481481481,
+  "baseline_seconds": null,
+  "optimize_seconds": null,
+  "eval_seconds": null,
+  "accepted_mutations": 5,
+  "best_candidate_idx": 5,
+  "notes": "OpenRouter daily free-tier quota (2000 req/day) exhausted at iter 24 of 25-ish; final optimized re-eval on fresh LM calls could not complete. Scores here are GEPA's tracked full-valset scores per candidate (also cached)."
+}

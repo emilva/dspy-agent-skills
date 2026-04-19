@@ -50,6 +50,18 @@ In your agent, say:
 
 The agent auto-loads `dspy-advanced-workflow`, which chains the other skills and outputs a full baseline → GEPA → export pipeline. No further prompting needed.
 
+## End-to-end examples (validated against free OpenRouter models)
+
+Three runnable demos under [`examples/`](examples/) exercise every skill against real LMs and ship with **committed baseline vs. GEPA-optimized numbers** you can reproduce end-to-end for **$0**:
+
+| Example | Task LM | Baseline | Optimized | Δ |
+|---|---|---:|---:|---:|
+| [01-rag-qa](examples/01-rag-qa/) | GLM 4.5 Air (32B) | 81.15 | **100.00** | **+18.85** |
+| [02-math-reasoning](examples/02-math-reasoning/) | Liquid LFM 2.5 (1.2B) | 45.00 | **70.00** | **+25.00** |
+| [03-invoice-extraction](examples/03-invoice-extraction/) | Liquid LFM 2.5 (1.2B) | 0.833 | **0.931** | **+0.098** |
+
+All runs: `auto="light"`, `seed=0`, reflection LM `nvidia/nemotron-3-super-120b-a12b:free`. See [`examples/README.md`](examples/README.md) for the full quickstart and per-example READMEs for task details.
+
 ## Why this pack exists
 
 Earlier drafts had several plausible-but-wrong details — wrong `GEPA` import path, deprecated `TypedPredictor`, frontmatter fields that Claude Code ignores (`triggers`, `version`, `dspy-compatibility`). This pack is the corrected, source-verified successor. See [docs/CHANGELOG.md](docs/CHANGELOG.md) for the full diff.

@@ -1,0 +1,14 @@
+{
+  "task_model": "openrouter/liquid/lfm-2.5-1.2b-instruct:free",
+  "reflection_model": "openrouter/nvidia/nemotron-3-super-120b-a12b:free",
+  "auto": "light",
+  "seed": 0,
+  "trainset_size": 34,
+  "valset_size": 12,
+  "baseline_score": 45.0,
+  "optimized_score": 70.0,
+  "improvement": 25.0,
+  "baseline_seconds": 0.2,
+  "optimize_seconds": 1399.9,
+  "eval_seconds": 0.1
+}

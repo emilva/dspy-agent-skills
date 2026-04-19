@@ -1,0 +1,40 @@
+{
+  "synth.predict": {
+    "traces": [],
+    "train": [],
+    "demos": [],
+    "signature": {
+      "instructions": "You are given a set of retrieved passages. Each passage is prefixed with a label in square brackets, e.g., [mercury], [pluto], etc. The label is the passage ID. Your task is to answer the user's question using only information found in these passages.\n\nOutput must contain three parts:\n\n1. **reasoning** – a brief explanation of where the answer is located, explicitly naming the passage ID(s) that contain the relevant information.\n2. **answer** – a concise, complete statement that directly answers the question. Include any necessary units or qualifiers so the answer is self‑contained (e.g., “2100 km/h” is too terse; instead write “Winds on Neptune can reach 2100 km/h”). Do not add facts that are not present in the cited passages.\n3. **citations** – a Python‑style list of the passage IDs (without the surrounding brackets) that support the answer. Example: ['mercury'] or ['io', 'earth']. Only list IDs that actually appear in the context and that contain the evidence used.\n\nImportant rules:\n- Cite only the passage IDs exactly as they appear inside the brackets in the context; do not include the brackets themselves in the citations list.\n- If the answer requires information from multiple passages, include all relevant IDs in the citations list.\n- Keep the answer concise but sufficiently detailed to be a full sentence; avoid overly terse responses that consist of only a number or fragment.\n- Do not invent or infer information beyond what is explicitly stated in the cited passages.",
+      "fields": [
+        {
+          "prefix": "Context:",
+          "description": "retrieved passages labeled with [id] markers"
+        },
+        {
+          "prefix": "Question:",
+          "description": "${question}"
+        },
+        {
+          "prefix": "Reasoning: Let's think step by step in order to",
+          "description": "${reasoning}"
+        },
+        {
+          "prefix": "Answer:",
+          "description": "short, factual answer — no prose padding"
+        },
+        {
+          "prefix": "Citations:",
+          "description": "doc IDs from the context that support the answer"
+        }
+      ]
+    },
+    "lm": null
+  },
+  "metadata": {
+    "dependency_versions": {
+      "python": "3.10",
+      "dspy": "3.1.3",
+      "cloudpickle": "3.1"
+    }
+  }
+}

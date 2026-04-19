@@ -9,5 +9,14 @@ __pycache__/
 gepa_logs/
 *.log
 
+# Per-run example outputs (keep results.json/md and optimized_program.json)
+examples/*/runs/
+.cache/
+
 # Historical planning doc — intentionally untracked
 PLAN.md
+
+# Secrets — never commit
+.env
+.env.*
+!.env.example

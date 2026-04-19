@@ -37,3 +37,22 @@ First published release. Synthesis and correction of the initial `PLAN.md` draft
 - Claude Code marketplace manifest (`.claude-plugin/marketplace.json`)
 - Claude Code plugin manifest (`.claude-plugin/plugin.json`)
 - `scripts/install.sh` for direct install into `~/.claude/skills/` and `~/.agents/skills/` (symlink or copy, idempotent, `--uninstall` supported)
+
+### End-to-end examples
+
+Three validated showcases under `examples/`, each with committed baseline vs. GEPA-optimized numbers:
+
+- `examples/01-rag-qa/` — RAG with citations. GLM 4.5 Air (32B): **81.15 → 100.00 (+18.85)**, 1 mutation accepted.
+- `examples/02-math-reasoning/` — multi-step arithmetic. Liquid LFM 2.5 (1.2B): **45.00 → 70.00 (+25.00)**, 5 mutations accepted.
+- `examples/03-invoice-extraction/` — Pydantic-typed invoice records. Liquid LFM 2.5 (1.2B): **0.833 → 0.931 (+0.098)**, 5 mutations accepted.
+
+Each example ships `pipeline.py` (module + Signature + metric), `run.py` (CLI: `--dry-run` / `--baseline` / `--optimize` / `--eval`), data JSONL, and `results.{json,md}` from the author's run. Default models are all free on OpenRouter.
+
+### Lessons discovered during validation (baked into the skills)
+
+1. **GEPA metric return must be `dspy.Prediction(score, feedback)`, not a dict.** DSPy's parallel evaluator cannot sum dict-typed outputs (`TypeError: int + dict`). Every example's metric uses the Prediction shape.
+2. **GEPA requires `reflection_lm` at construction time**, not at `.compile()`. A cheap stub `dspy.LM(...)` is sufficient for dry-runs (construction is a no-op network-wise).
+3. **GEPA state pickling needs cloudpickle** when signatures/modules are dynamic (e.g., typed Pydantic outputs). Pass `gepa_kwargs={"use_cloudpickle": True}`.
+4. **`from __future__ import annotations` breaks Pydantic-typed DSPy signatures** — DSPy receives a `ForwardRef` string instead of the actual type. Ex03's pipeline deliberately omits the future import.
+5. **`reflection_minibatch_size` matters more than you'd expect.** With small minibatches and high baseline accuracy, GEPA keeps sampling all-correct subsets and the reflection LM is never called. Raise to 6–8 when baseline > 0.7.
+6. **Modern 8B+ open models saturate simple extraction and grade-school math**. The math and invoice examples use Liquid 1.2B to create real headroom; stronger models produce baseline ≥ 0.95 and GEPA correctly no-ops.

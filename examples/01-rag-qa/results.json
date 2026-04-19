@@ -1,0 +1,14 @@
+{
+  "task_model": "openrouter/z-ai/glm-4.5-air:free",
+  "reflection_model": "openrouter/nvidia/nemotron-3-super-120b-a12b:free",
+  "auto": "light",
+  "seed": 0,
+  "trainset_size": 15,
+  "valset_size": 10,
+  "baseline_score": 81.15,
+  "optimized_score": 100.0,
+  "improvement": 18.849999999999994,
+  "baseline_seconds": 0.2,
+  "optimize_seconds": 1695.4,
+  "eval_seconds": 0.0
+}
