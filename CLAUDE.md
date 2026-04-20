@@ -21,7 +21,7 @@ docs/              # installation.md, usage.md, CHANGELOG.md
 ## Commands you'll actually run
 
 ```bash
-# Validate all skill metadata, manifests, and example syntax (34 tests)
+# Validate all skill metadata, manifests, example syntax, and skill-doc correctness (60 tests)
 uv run --with pytest python -m pytest tests/ -v
 
 # Smoke-test every example offline (no API key needed)
@@ -66,7 +66,7 @@ Every DSPy API claim must be verifiable against https://dspy.ai/ for DSPy 3.1.x.
 1. Create `skills/<new-name>/SKILL.md` with spec-compliant frontmatter.
 2. Add `reference.md` for the longer-form API detail.
 3. Add at least one `example_*.py` with a `--dry-run` path that constructs the relevant DSPy objects without calling an LM.
-4. Run `uv run --with pytest python -m pytest tests/ -v` — all 34+ tests must pass. The frontmatter validator will catch spec drift automatically.
+4. Run `uv run --with pytest python -m pytest tests/ -v` — all 60+ tests must pass. Frontmatter, correctness, and docs-completeness guards will catch drift automatically.
 5. Update the skill table in `README.md` and `docs/usage.md`.
 6. Bump `version` in `.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json`.
 7. Add a `docs/CHANGELOG.md` entry describing what changed and why.

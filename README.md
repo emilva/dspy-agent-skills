@@ -7,7 +7,7 @@
 - ✅ Progressive disclosure (short `SKILL.md` + deep `reference.md`)
 - ✅ Runnable `example_*.py` scripts with offline `--dry-run`
 - ✅ Plugin manifest + marketplace manifest for one-click install
-- ✅ 34 validation tests (frontmatter spec, JSON schema, Python AST)
+- ✅ 60 validation tests (frontmatter spec, JSON schema, Python AST, skill-doc correctness guards)
 
 ## What's inside
 
@@ -105,7 +105,7 @@ dspy-agent-skills/
 │   ├── dspy-fundamentals/{SKILL.md, reference.md, example_qa.py}
 │   ├── dspy-evaluation-harness/{SKILL.md, reference.md, example_metric.py}
 │   ├── dspy-gepa-optimizer/{SKILL.md, reference.md, example_gepa.py}
-│   ├── dspy-rlm-module/{SKILL.md, reference.md}
+│   ├── dspy-rlm-module/{SKILL.md, reference.md, example_rlm.py}
 │   └── dspy-advanced-workflow/{SKILL.md, example_pipeline.py}
 ├── scripts/install.sh           # dual-target installer
 ├── tests/                       # spec validators
