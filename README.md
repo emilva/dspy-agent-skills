@@ -62,9 +62,7 @@ Three runnable demos under [`examples/`](examples/) exercise every skill against
 
 All runs: `auto="light"`, `seed=0`, reflection LM `nvidia/nemotron-3-super-120b-a12b:free`. See [`examples/README.md`](examples/README.md) for the full quickstart and per-example READMEs for task details.
 
-## Why this pack exists
-
-Earlier drafts had several plausible-but-wrong details — wrong `GEPA` import path, deprecated `TypedPredictor`, frontmatter fields that Claude Code ignores (`triggers`, `version`, `dspy-compatibility`). This pack is the corrected, source-verified successor. See [docs/CHANGELOG.md](docs/CHANGELOG.md) for the full diff.
+## Grounding
 
 Every API claim is grounded in:
 
@@ -115,7 +113,7 @@ dspy-agent-skills/
 
 ## Version
 
-**v2.2.0** — April 19, 2026  •  Targets DSPy 3.1.x
+**v0.1.0** — April 19, 2026  •  Targets DSPy 3.1.x
 
 ## License
 

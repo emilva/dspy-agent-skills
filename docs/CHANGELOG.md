@@ -1,6 +1,6 @@
 # Changelog
 
-## v2.2.0 — 2026-04-19
+## v0.1.0 — 2026-04-19
 
 First published release. Synthesis and correction of the initial `PLAN.md` draft into a spec-compliant pack that installs cleanly in Claude Code and Codex CLI.
 
